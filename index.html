@@ -61,7 +61,7 @@
           <h2 class="title is-4">Плеер</h2>
           <div class="box game-area">
             <!-- Manual Ruffle container -->
-            <div id="container" style="width:620px; height:520px;"></div>
+            <div id="container" style="width:580px; height:520px;"></div>
               <p class="has-text-grey">Выберите игру из галереи, чтобы начать.</p>
             </div>
           </div>
@@ -118,12 +118,13 @@
       card.onclick = () => loadGame(game);
 
       const cardContent = `
-        <div class="card-content">
+        <div class="card-image">
           <figure class="image is-128x64">
             <img src="${escapeHtml(game.thumb)}"/>
           </figure>
+        </div>
+        <div class="card-content">
           <p class="title is-6">${escapeHtml(game.title)}</p>
-          <p class="subtitle is-7">${escapeHtml(game.file)}</p>
         </div>
       `;
 
