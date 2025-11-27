@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Falafel</title>
-  <link rel="icon" href="/favicon.ico" sizes="any">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <!-- Bulma CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
   <!-- Ruffle JS (manual initialization) -->
@@ -102,8 +102,8 @@
     // --- Configure your games here ---
     // Put the corresponding .swf files into a `games/` folder in the repo.
     const gamesList = [
-      { title: 'Bloons TD4', file: 'games/bloonstd4.swf', thumb: '' },
-      { title: 'Fireboy and Watergirl 3: In The Ice Temple', file: 'games/FireBoyAndWaterGirl.swf', thumb: '' }
+      { title: 'Bloons TD4', file: 'games/bloonstd4.swf', thumb: 'https://www.iphones.ru/wp-content/uploads/2011/01/Bloons-TD-4-iPhones.ru-Review.jpg' },
+      { title: 'Fireboy and Watergirl 3: In The Ice Temple', file: 'games/FireBoyAndWaterGirl.swf', thumb: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStQIe56nsFX2FGLPqvojbOo8onWZCxoDbpzQ&s' }
     ];
 
     const gamesGrid = document.getElementById('gamesGrid');
@@ -119,6 +119,9 @@
 
       const cardContent = `
         <div class="card-content">
+          <figure class="image is-128x64">
+            <img src="${escapeHtml(game.thumb)}"/>
+          </figure>
           <p class="title is-6">${escapeHtml(game.title)}</p>
           <p class="subtitle is-7">${escapeHtml(game.file)}</p>
         </div>
