@@ -52,7 +52,7 @@
 
           <div class="box">
             <h2 class="subtitle is-6">Загрузить .swf</h2>
-            <p class="is-size-7">Для локальной загрузки (разработчикам): используйте папку <code>/games</code> в репозитории. На GitHub Pages просто закоммитьте файлы туда.</p>
+            <p class="is-size-7">Временно не доступно!</p>
           </div>
 
         </div>
@@ -103,7 +103,12 @@
     // Put the corresponding .swf files into a `games/` folder in the repo.
     const gamesList = [
       { title: 'Bloons TD4', file: 'games/bloonstd4.swf', thumb: 'https://www.iphones.ru/wp-content/uploads/2011/01/Bloons-TD-4-iPhones.ru-Review.jpg' },
-      { title: 'Fireboy and Watergirl 3: In The Ice Temple', file: 'games/FireBoyAndWaterGirl.swf', thumb: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStQIe56nsFX2FGLPqvojbOo8onWZCxoDbpzQ&s' }
+      { title: 'Fireboy and Watergirl 3: In The Ice Temple', file: 'games/FireBoyAndWaterGirl.swf', thumb: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStQIe56nsFX2FGLPqvojbOo8onWZCxoDbpzQ&s' },
+      { title: 'Shop Empire 3', file: 'games/Shop-Empire-3-kong.swf', thumb: 'https://infinity.unstable.life/images/Logos/2c/7b/2c7b58dd-fa69-8912-e023-17f3f29de39a.png?type=jpg' },
+      { title: 'Happy Wheels Demo', file: 'games/547504_hw_demo.swf', thumb: 'https://infinity.unstable.life/images/Logos/65/c5/65c59812-7eae-4e9e-a3b5-350e5e865d51.png?type=jpg' },
+      { title: 'Papa Louie 2: When Burgers Attack!', file: 'games/PapaLouie2_v2_1.swf', thumb: 'https://infinity.unstable.life/images/Logos/16/c2/16c27895-f7a6-6c65-18f3-feebcf87d28a.png?type=jpg' },
+      { title: 'Papa Louie 3: When Sundaes Attack!', file: 'games/654944_papalouie3.swf', thumb: 'https://infinity.unstable.life/images/Logos/ab/63/ab638461-9317-bbaa-9ccf-e7f0360e3b1b.png?type=jpg' },
+      { title: 'Bejeweled 2', file: 'games/bejeweled2.swf', thumb: 'https://infinity.unstable.life/images/Logos/60/0f/600f0be7-464f-0f74-6eea-157b36e65e94.png?type=jpg' },
     ];
 
     const gamesGrid = document.getElementById('gamesGrid');
@@ -136,7 +141,7 @@
     function renderGallery(){
       gamesGrid.innerHTML = '';
       if(gamesList.length === 0){
-        gamesGrid.innerHTML = '<div class="column">Нет игр. Добавьте SWF в папку <code>/games</code> и обновите массив <code>gamesList</code>.</div>';
+        gamesGrid.innerHTML = '<div class="column">Нет игр.</div>';
         return;
       }
       gamesList.forEach(g => gamesGrid.appendChild(createGameCard(g)));
