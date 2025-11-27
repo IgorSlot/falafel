@@ -1,21 +1,11 @@
-<!--
-  Ruffle Flash Games — single-file GitHub-ready site
-  - Uses Bulma for styling (CDN)
-  - Uses Ruffle (unpkg CDN) as Flash (SWF) emulator
-  - Instructions below (in the README section at the bottom)
-
-  How to use:
-  1. Put your .swf files into a folder named `games/` next to this index.html.
-  2. Edit the `gamesList` array in the <script> below to add title + filename.
-  3. Push to a GitHub repo and enable GitHub Pages (branch: main / root).
--->
-
 <!doctype html>
 <html lang="ru">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Ruffle Flash Games</title>
+  <title>Falafel</title>
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <!-- Bulma CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
   <!-- Ruffle JS (manual initialization) -->
@@ -31,7 +21,7 @@
   <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <a class="navbar-item" href="#">
-        <strong>Ruffle Flash Games</strong>
+        <strong>Falafel<i>ᵝ</i></strong>
       </a>
       <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navMenu">
         <span aria-hidden="true"></span>
@@ -53,7 +43,7 @@
       <div class="columns">
         <div class="column is-one-third">
           <h1 class="title">Игровая панель</h1>
-          <p class="subtitle">Выберите игру в галерее — она загрузится в плеер ниже.</p>
+          <p class="subtitle">Выберите игру в галерее - она загрузится в плеер ниже.</p>
 
           <div id="gallery" class="box" style="max-height:55vh; overflow:auto">
             <!-- cards rendered by JS -->
@@ -71,7 +61,7 @@
           <h2 class="title is-4">Плеер</h2>
           <div class="box game-area">
             <!-- Manual Ruffle container -->
-            <div id="container" style="width:100%; height:520px;"></div>
+            <div id="container" style="width:620px; height:520px;"></div>
               <p class="has-text-grey">Выберите игру из галереи, чтобы начать.</p>
             </div>
           </div>
@@ -85,7 +75,7 @@
       <hr />
       <section id="about">
         <h3 class="title is-5">О сайте</h3>
-        <p>Этот сайт — минимальный шаблон для размещения SWF-игр с эмулятором Ruffle. Он оптимизирован для размещения на GitHub Pages (корневая ветка).</p>
+        <p>Это сайт с играми Flash и эмулятором Ruffle для его работы.</p>
       </section>
 
     </div>
@@ -93,7 +83,7 @@
 
   <footer class="footer">
     <div class="content has-text-centered">
-      <p>Сайт создан с Bulma + Ruffle • Готов к публикации на GitHub Pages.</p>
+      <p>Made by <a href="https://github.com/IgorSlot">@igorslot</a></p>
     </div>
   </footer>
 
@@ -171,26 +161,3 @@
     // Optional: detect if Ruffle loaded
     window.addEventListener('ruffleloaded', ()=>console.log('Ruffle loaded'));
   </script>
-
-  <!-- README (human-readable instructions) -->
-  <!--
-    README
-    ======
-
-    Files included:
-      - index.html  (this file)
-
-    Usage
-    -----
-    1. Create a folder `games/` next to index.html and place your .swf files there.
-    2. Edit the `gamesList` array in index.html and add your games: { title: 'Name', file: 'games/your.swf' }.
-    3. Commit & push to a GitHub repository.
-    4. In the repository settings -> Pages, enable GitHub Pages to serve from the `main` branch (root). The site will be available at https://<username>.github.io/<repo>/
-
-    Notes
-    -----
-    - GitHub Pages will host static assets including .swf files. Make sure your repo isn't private if you want public access.
-    - Some SWF files use networking or external resources that might be blocked by browsers; Ruffle is actively improving compatibility but not all SWFs will run perfectly.
-  -->
-</body>
-</html>
