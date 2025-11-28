@@ -11,16 +11,31 @@
   <!-- Ruffle JS (manual initialization) -->
   <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
   <style>
-    html,body{height:100%}
-    .game-area{min-height:420px}
-    .is-clickable{cursor:pointer}
+    html, body {
+      -ms-overflow-style: none;  /* IE и Edge */
+      scrollbar-width: none;  /* Firefox */
+      height:100;
+      background-color: #F0F0F0;
+    }
+
+    .game-area {
+      min-height:420px
+    }
+
+    .is-clickable {
+      cursor:pointer
+    }
+
+    ::-webkit-scrollbar {
+      display: none;
+    }
   </style>
 </head>
 <body>
   <!-- NAV -->
-  <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+  <nav class="navbar" role="navigation" aria-label="main navigation" style="background-color: #F0F0F0;">
     <div class="navbar-brand">
-      <a class="navbar-item" href="https://igorslot.github.io/falafel">
+      <a class="navbar-item title" href="https://igorslot.github.io/falafel">
         <strong>Falafel</strong>ᵝ
       </a>
     </div>
@@ -34,14 +49,9 @@
           <h1 class="title">Игровая панель</h1>
           <p class="subtitle">Выберите игру в галерее - она загрузится в плеер ниже.</p>
 
-          <div id="gallery" class="box" style="max-height:55vh; overflow:auto">
+          <div id="gallery" class="box" style="max-height: 410px; overflow:auto">
             <!-- cards rendered by JS -->
             <div id="gamesGrid" class="columns is-multiline"></div>
-          </div>
-
-          <div class="box">
-            <h2 class="subtitle is-6">Загрузить .swf</h2>
-            <p class="is-size-7">Временно не доступно!</p>
           </div>
 
         </div>
@@ -55,43 +65,32 @@
             </div>
           </div>
 
-          <div class="box">
-            <p class="is-size-7">Ruffle работает на большинстве современных браузеров, но некоторые игры, использующие специфичные плагины или расширенные функции Flash, могут неправильно работать.</p>
-          </div>
         </div>
       </div>
 
     </div>
   </section>
 
-  <footer class="footer">
-    <div class="content has-text-centered">
-      <p>Made by <a href="https://github.com/IgorSlot">@igorslot</a></p>
-    </div>
-  </footer>
+  <div class="content has-text-centered">
+    <p>Made by <a href="https://github.com/IgorSlot">@igorslot</a></p>
+  </div>
 
   <!-- SCRIPTS -->
   <script>
-    // Navbar burger toggle
-    document.addEventListener('DOMContentLoaded', () => {
-      const burger = document.querySelector('.navbar-burger');
-      const menu = document.getElementById('navMenu');
-      burger && burger.addEventListener('click', () => {
-        burger.classList.toggle('is-active');
-        menu.classList.toggle('is-active');
-      });
-    });
-
     // --- Configure your games here ---
     // Put the corresponding .swf files into a `games/` folder in the repo.
     const gamesList = [
-      { title: 'Bloons TD4', file: 'games/bloonstd4.swf', thumb: 'https://www.iphones.ru/wp-content/uploads/2011/01/Bloons-TD-4-iPhones.ru-Review.jpg' },
+      { title: 'Bloons TD 4', file: 'games/bloonstd4.swf', thumb: 'https://www.iphones.ru/wp-content/uploads/2011/01/Bloons-TD-4-iPhones.ru-Review.jpg' },
       { title: 'Fireboy and Watergirl 3: In The Ice Temple', file: 'games/FireBoyAndWaterGirl.swf', thumb: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStQIe56nsFX2FGLPqvojbOo8onWZCxoDbpzQ&s' },
       { title: 'Shop Empire 3', file: 'games/Shop-Empire-3-kong.swf', thumb: 'https://infinity.unstable.life/images/Logos/2c/7b/2c7b58dd-fa69-8912-e023-17f3f29de39a.png?type=jpg' },
       { title: 'Happy Wheels Demo', file: 'games/547504_hw_demo.swf', thumb: 'https://infinity.unstable.life/images/Logos/65/c5/65c59812-7eae-4e9e-a3b5-350e5e865d51.png?type=jpg' },
       { title: 'Papa Louie 2: When Burgers Attack!', file: 'games/PapaLouie2_v2_1.swf', thumb: 'https://infinity.unstable.life/images/Logos/16/c2/16c27895-f7a6-6c65-18f3-feebcf87d28a.png?type=jpg' },
       { title: 'Papa Louie 3: When Sundaes Attack!', file: 'games/654944_papalouie3.swf', thumb: 'https://infinity.unstable.life/images/Logos/ab/63/ab638461-9317-bbaa-9ccf-e7f0360e3b1b.png?type=jpg' },
       { title: 'Bejeweled 2', file: 'games/bejeweled2.swf', thumb: 'https://infinity.unstable.life/images/Logos/60/0f/600f0be7-464f-0f74-6eea-157b36e65e94.png?type=jpg' },
+      { title: "Papa's Bakeria", file: 'games/papasbakeria_101.swf', thumb: 'https://infinity.unstable.life/images/Logos/a8/70/a8707c0f-6aac-4c94-9d8a-cc397c97cc88.png?type=jpg' },
+      { title: "Papa's Cheeseria", file: 'games/papascheeseria_102.swf', thumb: 'https://infinity.unstable.life/images/Logos/61/7c/617ca7f3-1cff-3f0c-5b53-07498b3b28d8.png?type=jpg' },
+      { title: 'Earn to Die 2: Exodus', file: 'games/earntodie2-exodus.swf', thumb: 'https://infinity.unstable.life/images/Logos/b7/55/b755c33a-47b8-5cce-b45e-df744deaad6a.png?type=jpg' },
+      { title: 'Super Mario 63', file: 'games/game-1257163257.swf', thumb: 'https://infinity.unstable.life/images/Logos/16/b0/16b04977-f714-4239-b343-b759e16a33af.png?type=jpg' }
     ];
 
     const gamesGrid = document.getElementById('gamesGrid');
@@ -108,7 +107,7 @@
       const cardContent = `
         <div class="card-image">
           <figure class="image is-128x64">
-            <img src="${escapeHtml(game.thumb)}"/>
+            <img src="${escapeHtml(game.thumb)}" />
           </figure>
         </div>
         <div class="card-content">
@@ -152,3 +151,5 @@
     // Optional: detect if Ruffle loaded
     window.addEventListener('ruffleloaded', ()=>console.log('Ruffle loaded'));
   </script>
+</body>
+</html>
