@@ -6,34 +6,83 @@
   <title>Falafel</title>
   <link rel="icon" href="favicon.ico" sizes="any">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
   <!-- Bulma CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+
   <!-- Ruffle JS (manual initialization) -->
   <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
+
   <style>
     html, body {
-      -ms-overflow-style: none;  /* IE и Edge */
-      scrollbar-width: none;  /* Firefox */
-      height:100;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      height: 100%;
       background-color: #F0F0F0;
     }
 
     .game-area {
-      min-height:420px
+      min-height: 420px;
     }
 
     .is-clickable {
-      cursor:pointer
+      cursor: pointer;
     }
 
     ::-webkit-scrollbar {
       display: none;
     }
+
+    .favorite-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      font-size: 22px;
+      cursor: pointer;
+      user-select: none;
+      color: #ffcc00;
+      text-shadow: 0 0 3px #000;
+      z-index: 2;
+    }
+
+    /* -----------------------------
+       КАРТОЧКИ ИЗ ОДНОГО РАЗМЕРА
+    ------------------------------ */
+    .card {
+      width: 100%;
+      height: 220px; /* фиксированная высота */
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .card-image {
+      height: 140px; /* фиксированная зона под картинку */
+      overflow: hidden;
+      position: relative;
+    }
+
+    .card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* растягивает картинку по всей области */
+      display: block;
+    }
+
+    .card-content {
+      flex: 1;
+      padding: 5px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
   </style>
 </head>
+
 <body>
   <!-- NAV -->
-  <nav class="navbar" role="navigation" aria-label="main navigation" style="background-color: #F0F0F0;">
+  <nav class="navbar" aria-label="main navigation" style="background-color: #F0F0F0;">
     <div class="navbar-brand">
       <a class="navbar-item title" href="https://igorslot.github.io/falafel">
         <strong>Falafel</strong>ᵝ
@@ -45,29 +94,35 @@
   <section class="section">
     <div class="container">
       <div class="columns">
+
+        <!-- GALLERY -->
         <div class="column is-one-third">
           <h1 class="title">Игровая панель</h1>
-          <p class="subtitle">Выберите игру в галерее - она загрузится в плеер ниже.</p>
+          <p class="subtitle">Выберите игру в галерее — она загрузится в плеер ниже.</p>
 
           <div id="gallery" class="box" style="max-height: 410px; overflow:auto">
-            <!-- cards rendered by JS -->
             <div id="gamesGrid" class="columns is-multiline"></div>
           </div>
-
         </div>
 
+        <!-- PLAYER -->
         <div class="column">
           <h2 class="title is-4">Плеер</h2>
           <div class="box game-area">
-            <!-- Manual Ruffle container -->
-            <div id="container" style="width:560px; height:410px;"></div>
-              <p class="has-text-grey">Выберите игру из галереи, чтобы начать.</p>
-            </div>
+            <div id="container" style="width:550px; height:410px;"></div>
+            <p class="has-text-grey">Выберите игру из галереи, чтобы начать.</p>
           </div>
-
         </div>
-      </div>
 
+        <!-- FAVORITES -->
+        <div class="column is-one-quarter">
+          <h1 class="title">Избранное</h1>
+          <div id="favoritesBox" class="box" style="max-height: 410px; overflow:auto">
+            <div id="favoritesGrid" class="columns is-multiline"></div>
+          </div>
+        </div>
+
+      </div>
     </div>
   </section>
 
@@ -77,8 +132,7 @@
 
   <!-- SCRIPTS -->
   <script>
-    // --- Configure your games here ---
-    // Put the corresponding .swf files into a `games/` folder in the repo.
+    // --- ИГРЫ --- //
     const gamesList = [
       { title: 'Bloons TD 4', file: 'games/bloonstd4.swf', thumb: 'https://www.iphones.ru/wp-content/uploads/2011/01/Bloons-TD-4-iPhones.ru-Review.jpg' },
       { title: 'Fireboy and Watergirl 3: In The Ice Temple', file: 'games/FireBoyAndWaterGirl.swf', thumb: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStQIe56nsFX2FGLPqvojbOo8onWZCxoDbpzQ&s' },
@@ -90,66 +144,95 @@
       { title: "Papa's Bakeria", file: 'games/papasbakeria_101.swf', thumb: 'https://infinity.unstable.life/images/Logos/a8/70/a8707c0f-6aac-4c94-9d8a-cc397c97cc88.png?type=jpg' },
       { title: "Papa's Cheeseria", file: 'games/papascheeseria_102.swf', thumb: 'https://infinity.unstable.life/images/Logos/61/7c/617ca7f3-1cff-3f0c-5b53-07498b3b28d8.png?type=jpg' },
       { title: 'Earn to Die 2: Exodus', file: 'games/earntodie2-exodus.swf', thumb: 'https://infinity.unstable.life/images/Logos/b7/55/b755c33a-47b8-5cce-b45e-df744deaad6a.png?type=jpg' },
-      { title: 'Super Mario 63', file: 'games/game-1257163257.swf', thumb: 'https://infinity.unstable.life/images/Logos/16/b0/16b04977-f714-4239-b343-b759e16a33af.png?type=jpg' }
+      { title: 'Super Mario 63', file: 'games/game-1257163257.swf', thumb: 'https://infinity.unstable.life/images/Logos/16/b0/16b04977-f714-4239-b343-b759e16a33af.png?type=jpg' },
+      { title: 'Bloons TD 5', file: 'games/btd5-dat.swf', thumb: 'https://infinity.unstable.life/images/Logos/07/92/07921a2f-26fd-4364-9671-ee0c8d256ec1.png?type=jpg' },
+      { title: 'Kingdom Rush Frontiers', file: 'games/kingdom-rush-frontie-15717.swf', thumb: 'https://infinity.unstable.life/images/Logos/cc/77/cc779eb6-424b-4377-bda6-e5af9643ee55.png?type=jpg' },
+      { title: 'Bloons TD 3', file: 'games/bloonstd3.swf', thumb: 'https://infinity.unstable.life/images/Logos/4d/75/4d752085-81b5-4ae6-85b1-2b93801d91ac.png?type=jpg' }
     ];
 
-    const gamesGrid = document.getElementById('gamesGrid');
-    const playerWrap = document.getElementById('playerWrap');
+    const favoritesKey = "falafel_favorites";
+    let favorites = JSON.parse(localStorage.getItem(favoritesKey) || "[]");
 
-    function createGameCard(game){
+    const gamesGrid = document.getElementById('gamesGrid');
+    const favoritesGrid = document.getElementById('favoritesGrid');
+
+    function toggleFavorite(game) {
+      const exists = favorites.find(f => f.file === game.file);
+      if (exists) {
+        favorites = favorites.filter(f => f.file !== game.file);
+      } else {
+        favorites.push(game);
+      }
+      localStorage.setItem(favoritesKey, JSON.stringify(favorites));
+      renderGallery();
+      renderFavorites();
+    }
+
+    function isFavorite(game) {
+      return favorites.some(f => f.file === game.file);
+    }
+
+    function createGameCard(game) {
       const col = document.createElement('div');
       col.className = 'column is-half';
 
       const card = document.createElement('div');
       card.className = 'card is-clickable';
-      card.onclick = () => loadGame(game);
 
-      const cardContent = `
+      card.innerHTML = `
         <div class="card-image">
-          <figure class="image is-128x64">
-            <img src="${escapeHtml(game.thumb)}" />
-          </figure>
+          <img src="${escapeHtml(game.thumb)}">
+          <div class="favorite-btn">${isFavorite(game) ? "★" : "☆"}</div>
         </div>
         <div class="card-content">
           <p class="title is-6">${escapeHtml(game.title)}</p>
         </div>
       `;
 
-      card.innerHTML = cardContent;
+      card.onclick = (e) => {
+        if (e.target.classList.contains("favorite-btn")) return;
+        loadGame(game);
+      };
+
+      card.querySelector(".favorite-btn").onclick = (e) => {
+        e.stopPropagation();
+        toggleFavorite(game);
+      };
+
       col.appendChild(card);
       return col;
     }
 
-    function renderGallery(){
-      gamesGrid.innerHTML = '';
-      if(gamesList.length === 0){
-        gamesGrid.innerHTML = '<div class="column">Нет игр.</div>';
-        return;
-      }
+    function renderGallery() {
+      gamesGrid.innerHTML = "";
       gamesList.forEach(g => gamesGrid.appendChild(createGameCard(g)));
     }
 
-    // Load game using manual Ruffle API
-    function loadGame(game){
+    function renderFavorites() {
+      favoritesGrid.innerHTML = "";
+      if (favorites.length === 0) {
+        favoritesGrid.innerHTML = "<p class='has-text-grey ml-3'>Нет избранных игр.</p>";
+        return;
+      }
+      favorites.forEach(g => favoritesGrid.appendChild(createGameCard(g)));
+    }
+
+    function loadGame(game) {
       const container = document.getElementById('container');
       container.innerHTML = '';
-
       const ruffle = window.RufflePlayer?.newest();
       const player = ruffle.createPlayer();
       container.appendChild(player);
       player.ruffle().load(game.file);
     }
 
-    // Minimal HTML-escape
-    function escapeHtml(s){
-      return s.replace(/[&<>\"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\\':'\\\\','"':'&quot;'}[c]));
+    function escapeHtml(s) {
+      return s.replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
     }
 
-    // Initialize
     renderGallery();
-
-    // Optional: detect if Ruffle loaded
-    window.addEventListener('ruffleloaded', ()=>console.log('Ruffle loaded'));
+    renderFavorites();
   </script>
+
 </body>
 </html>
