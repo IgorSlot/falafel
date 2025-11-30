@@ -7,10 +7,8 @@
   <link rel="icon" href="favicon.ico" sizes="any">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
-  <!-- Bulma CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-
-  <!-- Ruffle JS (manual initialization) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css">
   <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
 
   <style>
@@ -45,19 +43,16 @@
       z-index: 2;
     }
 
-    /* -----------------------------
-       КАРТОЧКИ ИЗ ОДНОГО РАЗМЕРА
-    ------------------------------ */
     .card {
       width: 100%;
-      height: 220px; /* фиксированная высота */
+      height: 220px;
       display: flex;
       flex-direction: column;
       overflow: hidden;
     }
 
     .card-image {
-      height: 140px; /* фиксированная зона под картинку */
+      height: 140px;
       overflow: hidden;
       position: relative;
     }
@@ -65,7 +60,7 @@
     .card-image img {
       width: 100%;
       height: 100%;
-      object-fit: cover; /* растягивает картинку по всей области */
+      object-fit: cover;
       display: block;
     }
 
@@ -81,7 +76,6 @@
 </head>
 
 <body>
-  <!-- NAV -->
   <nav class="navbar" aria-label="main navigation" style="background-color: #F0F0F0;">
     <div class="navbar-brand">
       <a class="navbar-item title" href="https://igorslot.github.io/falafel">
@@ -90,22 +84,25 @@
     </div>
   </nav>
 
-  <!-- MAIN -->
   <section class="section">
     <div class="container">
-      <div class="columns">
+      <div class="columns is-centered">
 
-        <!-- GALLERY -->
         <div class="column is-one-third">
           <h1 class="title">Игровая панель</h1>
-          <p class="subtitle">Выберите игру в галерее — она загрузится в плеер ниже.</p>
+          <p class="subtitle">Выберите игру в галерее - она загрузится в плеер ниже.</p>
 
-          <div id="gallery" class="box" style="max-height: 410px; overflow:auto">
+          <div class="field">
+            <div class="control">
+              <input id="searchInput" class="input" type="text" placeholder="Поиск игры...">
+            </div>
+          </div>
+
+          <div id="gallery" class="box" style="max-height: 360px; overflow:auto">
             <div id="gamesGrid" class="columns is-multiline"></div>
           </div>
         </div>
 
-        <!-- PLAYER -->
         <div class="column">
           <h2 class="title is-4">Плеер</h2>
           <div class="box game-area">
@@ -114,10 +111,9 @@
           </div>
         </div>
 
-        <!-- FAVORITES -->
-        <div class="column is-one-quarter">
+        <div class="column is-one-third">
           <h1 class="title">Избранное</h1>
-          <div id="favoritesBox" class="box" style="max-height: 410px; overflow:auto">
+          <div id="favoritesBox" class="box" style="max-height: 465px; overflow:auto">
             <div id="favoritesGrid" class="columns is-multiline"></div>
           </div>
         </div>
@@ -130,9 +126,7 @@
     <p>Made by <a href="https://github.com/IgorSlot">@igorslot</a></p>
   </div>
 
-  <!-- SCRIPTS -->
   <script>
-    // --- ИГРЫ --- //
     const gamesList = [
       { title: 'Bloons TD 4', file: 'games/bloonstd4.swf', thumb: 'https://www.iphones.ru/wp-content/uploads/2011/01/Bloons-TD-4-iPhones.ru-Review.jpg' },
       { title: 'Fireboy and Watergirl 3: In The Ice Temple', file: 'games/FireBoyAndWaterGirl.swf', thumb: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStQIe56nsFX2FGLPqvojbOo8onWZCxoDbpzQ&s' },
@@ -182,7 +176,9 @@
       card.innerHTML = `
         <div class="card-image">
           <img src="${escapeHtml(game.thumb)}">
-          <div class="favorite-btn">${isFavorite(game) ? "★" : "☆"}</div>
+          <div class="favorite-btn">
+            <i class="mdi ${isFavorite(game) ? "mdi-star" : "mdi-star-outline"}"></i>
+          </div>
         </div>
         <div class="card-content">
           <p class="title is-6">${escapeHtml(game.title)}</p>
@@ -190,7 +186,7 @@
       `;
 
       card.onclick = (e) => {
-        if (e.target.classList.contains("favorite-btn")) return;
+        if (e.target.closest(".favorite-btn")) return;
         loadGame(game);
       };
 
@@ -201,12 +197,12 @@
 
       col.appendChild(card);
       return col;
-    }
+    };
 
     function renderGallery() {
       gamesGrid.innerHTML = "";
       gamesList.forEach(g => gamesGrid.appendChild(createGameCard(g)));
-    }
+    };
 
     function renderFavorites() {
       favoritesGrid.innerHTML = "";
@@ -215,7 +211,7 @@
         return;
       }
       favorites.forEach(g => favoritesGrid.appendChild(createGameCard(g)));
-    }
+    };
 
     function loadGame(game) {
       const container = document.getElementById('container');
@@ -224,11 +220,28 @@
       const player = ruffle.createPlayer();
       container.appendChild(player);
       player.ruffle().load(game.file);
-    }
+    };
 
     function escapeHtml(s) {
       return s.replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
-    }
+    };
+
+    const searchInput = document.getElementById('searchInput');
+
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.toLowerCase();
+      const filteredGames = gamesList.filter(game => game.title.toLowerCase().includes(query));
+      renderGallery(filteredGames);
+    });
+
+    function renderGallery(games = gamesList) {
+      gamesGrid.innerHTML = "";
+      if (games.length === 0) {
+        gamesGrid.innerHTML = "<p class='has-text-grey ml-3'>Игры не найдены.</p>";
+        return;
+      }
+      games.forEach(g => gamesGrid.appendChild(createGameCard(g)));
+    };
 
     renderGallery();
     renderFavorites();
