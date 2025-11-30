@@ -185,18 +185,18 @@
         </div>
       `;
 
-      card.onclick = (e) => {
+    card.onclick = (e) => {
         if (e.target.closest(".favorite-btn")) return;
         loadGame(game);
-      };
+    };
 
-      card.querySelector(".favorite-btn").onclick = (e) => {
+    card.querySelector(".favorite-btn").onclick = (e) => {
         e.stopPropagation();
         toggleFavorite(game);
-      };
+    };
 
-      col.appendChild(card);
-      return col;
+    col.appendChild(card);
+    return col;
     };
 
     function renderGallery() {
