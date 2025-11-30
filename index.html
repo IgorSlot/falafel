@@ -43,6 +43,18 @@
       z-index: 2;
     }
 
+    .warning-inf {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      font-size: 22px;
+      cursor: help;
+      user-select: none;
+      color: #ff0000;
+      text-shadow: 0 0 3px #000;
+      z-index: 2;
+    }
+
     .card {
       width: 100%;
       height: 220px;
@@ -128,7 +140,7 @@
 
   <script>
     const gamesList = [
-      { title: 'Bloons TD 4', file: 'games/bloonstd4.swf', thumb: 'https://www.iphones.ru/wp-content/uploads/2011/01/Bloons-TD-4-iPhones.ru-Review.jpg' },
+      { title: 'Bloons TD 4', file: 'games/bloonstd4.swf', thumb: 'https://www.iphones.ru/wp-content/uploads/2011/01/Bloons-TD-4-iPhones.ru-Review.jpg', warning: 'Игра может не работать вообще или работать, но плохо.' },
       { title: 'Fireboy and Watergirl 3: In The Ice Temple', file: 'games/FireBoyAndWaterGirl.swf', thumb: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStQIe56nsFX2FGLPqvojbOo8onWZCxoDbpzQ&s' },
       { title: 'Shop Empire 3', file: 'games/Shop-Empire-3-kong.swf', thumb: 'https://infinity.unstable.life/images/Logos/2c/7b/2c7b58dd-fa69-8912-e023-17f3f29de39a.png?type=jpg' },
       { title: 'Happy Wheels Demo', file: 'games/547504_hw_demo.swf', thumb: 'https://infinity.unstable.life/images/Logos/65/c5/65c59812-7eae-4e9e-a3b5-350e5e865d51.png?type=jpg' },
@@ -139,8 +151,8 @@
       { title: "Papa's Cheeseria", file: 'games/papascheeseria_102.swf', thumb: 'https://infinity.unstable.life/images/Logos/61/7c/617ca7f3-1cff-3f0c-5b53-07498b3b28d8.png?type=jpg' },
       { title: 'Earn to Die 2: Exodus', file: 'games/earntodie2-exodus.swf', thumb: 'https://infinity.unstable.life/images/Logos/b7/55/b755c33a-47b8-5cce-b45e-df744deaad6a.png?type=jpg' },
       { title: 'Super Mario 63', file: 'games/game-1257163257.swf', thumb: 'https://infinity.unstable.life/images/Logos/16/b0/16b04977-f714-4239-b343-b759e16a33af.png?type=jpg' },
-      { title: 'Bloons TD 5', file: 'games/btd5-dat.swf', thumb: 'https://infinity.unstable.life/images/Logos/07/92/07921a2f-26fd-4364-9671-ee0c8d256ec1.png?type=jpg' },
-      { title: 'Kingdom Rush Frontiers', file: 'https://ia801308.us.archive.org/2/items/kingdom-rush-frontie-15717/kingdom-rush-frontie-15717.swf', thumb: 'https://infinity.unstable.life/images/Logos/cc/77/cc779eb6-424b-4377-bda6-e5af9643ee55.png?type=jpg' },
+      { title: 'Bloons TD 5', file: 'games/btd5-dat.swf', thumb: 'https://infinity.unstable.life/images/Logos/07/92/07921a2f-26fd-4364-9671-ee0c8d256ec1.png?type=jpg', warning: 'Игра может не работать вообще или работать, но плохо.' },
+      { title: 'Kingdom Rush Frontiers', file: 'https://ia801308.us.archive.org/2/items/kingdom-rush-frontie-15717/kingdom-rush-frontie-15717.swf', thumb: 'https://infinity.unstable.life/images/Logos/cc/77/cc779eb6-424b-4377-bda6-e5af9643ee55.png?type=jpg', warning: 'Игра может не работать вообще или работать, но плохо.' },
       { title: 'Bloons TD 3', file: 'games/bloonstd3.swf', thumb: 'https://infinity.unstable.life/images/Logos/4d/75/4d752085-81b5-4ae6-85b1-2b93801d91ac.png?type=jpg' }
     ];
 
@@ -173,9 +185,15 @@
       const card = document.createElement('div');
       card.className = 'card is-clickable';
 
+      let warningHtml = '';
+      if (game.warning) {
+        warningHtml = `<span class="mdi mdi-alert-circle warning-inf" title="${escapeHtml(game.warning)}"></span>`;
+      }
+
       card.innerHTML = `
         <div class="card-image">
           <img src="${escapeHtml(game.thumb)}">
+          ${warningHtml}
           <div class="favorite-btn">
             <i class="mdi ${isFavorite(game) ? "mdi-star" : "mdi-star-outline"}"></i>
           </div>
@@ -199,9 +217,13 @@
       return col;
     };
 
-    function renderGallery() {
+    function renderGallery(games = gamesList) {
       gamesGrid.innerHTML = "";
-      gamesList.forEach(g => gamesGrid.appendChild(createGameCard(g)));
+      if (games.length === 0) {
+        gamesGrid.innerHTML = "<p class='has-text-grey ml-3'>Игры не найдены.</p>";
+        return;
+      }
+      games.forEach(g => gamesGrid.appendChild(createGameCard(g)));
     };
 
     function renderFavorites() {
@@ -231,7 +253,7 @@
       const player = ruffle.createPlayer();
       container.appendChild(player);
       player.load(game.file);
-}
+    }
 
     function escapeHtml(s) {
       return s.replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
@@ -244,15 +266,6 @@
       const filteredGames = gamesList.filter(game => game.title.toLowerCase().includes(query));
       renderGallery(filteredGames);
     });
-
-    function renderGallery(games = gamesList) {
-      gamesGrid.innerHTML = "";
-      if (games.length === 0) {
-        gamesGrid.innerHTML = "<p class='has-text-grey ml-3'>Игры не найдены.</p>";
-        return;
-      }
-      games.forEach(g => gamesGrid.appendChild(createGameCard(g)));
-    };
 
     renderGallery();
     renderFavorites();
