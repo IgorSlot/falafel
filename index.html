@@ -185,18 +185,18 @@
         </div>
       `;
 
-    card.onclick = (e) => {
+      card.onclick = (e) => {
         if (e.target.closest(".favorite-btn")) return;
         loadGame(game);
-    };
+      };
 
-    card.querySelector(".favorite-btn").onclick = (e) => {
+      card.querySelector(".favorite-btn").onclick = (e) => {
         e.stopPropagation();
         toggleFavorite(game);
-    };
+      };
 
-    col.appendChild(card);
-    return col;
+      col.appendChild(card);
+      return col;
     };
 
     function renderGallery() {
@@ -216,11 +216,22 @@
     function loadGame(game) {
       const container = document.getElementById('container');
       container.innerHTML = '';
-      const ruffle = window.RufflePlayer?.newest();
+
+      if (!window.RufflePlayer) {
+        container.innerHTML = "<p class='has-text-danger'>Ошибка: RufflePlayer не загружен.</p>";
+        return;
+      }
+
+      const ruffle = window.RufflePlayer.newest();
+      if (!ruffle) {
+        container.innerHTML = "<p class='has-text-danger'>Ошибка: не удалось инициализировать Ruffle.</p>";
+        return;
+      }
+
       const player = ruffle.createPlayer();
       container.appendChild(player);
-      player.ruffle().load(game.file);
-    };
+      player.load(game.file);
+}
 
     function escapeHtml(s) {
       return s.replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
